@@ -16,6 +16,11 @@ def window_for_file(filename):
       return workspaces[workspace]
   return None
 
+def is_git_file(path):
+  git_files = ('COMMIT_EDITMSG', 'git-rebase-todo', 'MERGE_MSG')
+  if path and any(path.endswith(name) for name in git_files):
+    return True
+
 class OpenFileInCorrectWindow(sublime_plugin.EventListener):
   def on_load(self, view):
     if not view.window():
@@ -23,6 +28,8 @@ class OpenFileInCorrectWindow(sublime_plugin.EventListener):
 
     filename = view.file_name()
     if filename:
+      if is_git_file(filename):
+        return  # reopening git files breaks git
       for folder in view.window().folders():
         if filename.startswith(folder):
           print("file {} exists in {}".format(filename, folder))
