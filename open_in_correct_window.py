@@ -35,7 +35,7 @@ class OpenFileInCorrectWindow(sublime_plugin.EventListener):
           print("file {} exists in {}".format(filename, folder))
           return
       window = window_for_file(filename)
-    if window != view.window():
+    if window and window != view.window():
       line = None
       sel = view.sel()
       if len(sel) > 0:
